@@ -26,7 +26,7 @@ pipeline{
         stage("Package"){
             steps{
                 sh """
-                        ./mvnw package -Dname="${PROJECT_NAME}-${PROJECT_VERSION}"
+                        ./mvnw -ntp package -Dname="${PROJECT_NAME}-${PROJECT_VERSION}"
                 """
             }
         }
