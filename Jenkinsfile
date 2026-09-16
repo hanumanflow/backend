@@ -10,6 +10,9 @@ pipeline{
         stage("Checkout"){
             steps{
                 checkout scm
+                sh """
+                        chmod +x mvnw
+                """
             }
         }
         stage("Test"){
