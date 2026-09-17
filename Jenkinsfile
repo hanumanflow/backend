@@ -4,12 +4,16 @@ pipeline{
     environment{
         PROJECT_NAME="backend"
         PROJECT_VERSION=1
+        GIT_CREDENTIALS=credentials('github-username-password')
+        GIT_REPO="git@https://github.com/hanumanflow/backend.git"
+        BRANCH="feature/advanced"
+
     }
     options{
         timestamps()
         buildDiscarder(
             logRotator(
-                numToKeepStr: '3'
+                numToKeepStr: '3',
                 artifactNumToKeepStr: '3'
             )
         )
@@ -17,10 +21,44 @@ pipeline{
 
     stages{
         stage("Checkout"){
-            steps{
+            /*steps{
                 checkout scm
                 sh """
                     chmod +x mvnw
+                """
+            }*/
+
+            steps{
+                deleteDir() //to delete previous directory
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [
+                        [
+                            name: "${env.BRANCH}"
+                        ]
+                    ],
+                    userRemoteConfigs: [
+
+                        [
+                            credentialsId: 'github-username-password'
+                            url: "${GIT_REPO}"
+                        ]
+                    ]
+                ])
+
+                script{
+                    env.GIT_COMMIT_SHORT = sh(
+                        script: 'git rev-parse --short=8 HEAD',
+                        returnStdout: true
+                    )
+                    env.IMAGE_TAG = "${PROJECT_NAME}-${env.GIT_COMMIT_SHORT}"
+                    echo "Application commit = ${env.GIT_COMMIT_SHORT}"
+                    echo "Image Tag = ${env.IMAGE_TAG}"
+                }
+
+                sh """
+                    pwd
+                    ls -l
                 """
             }
         }
