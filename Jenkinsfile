@@ -7,7 +7,6 @@ pipeline{
         GIT_CREDENTIALS=credentials('github-username-password')
         GIT_REPO="https://github.com/hanumanflow/backend.git"
         BRANCH="feature/advanced"
-
     }
     options{
         timestamps()
@@ -21,13 +20,6 @@ pipeline{
 
     stages{
         stage("Checkout"){
-            /*steps{
-                checkout scm
-                sh """
-                    chmod +x mvnw
-                """
-            }*/
-
             steps{
                 deleteDir() //to delete previous directory
                 checkout([
@@ -38,7 +30,6 @@ pipeline{
                         ]
                     ],
                     userRemoteConfigs: [
-
                         [
                             credentialsId: 'github-username-password',
                             url: "${GIT_REPO}"
@@ -57,8 +48,6 @@ pipeline{
                 }
 
                 sh """
-                    pwd
-                    ls -l
                     chmod +x ./mvnw
                 """
             }
@@ -74,7 +63,7 @@ pipeline{
         stage("Package"){
             steps{
                 sh """
-                        ./mvnw -ntp package -Dproject.name="${PROJECT_NAME}-${PROJECT_VERSION}"
+                    ./mvnw -ntp package -Dproject.name="${PROJECT_NAME}-${PROJECT_VERSION}"
                 """
             }
         }
@@ -84,7 +73,6 @@ pipeline{
                 sh """
                     ls -l target/
                     nohup java -jar -Dserver.port=8081 "target/${PROJECT_NAME}-${PROJECT_VERSION}.jar" &>>backend.log &
-
                 """
                 // }
             }
@@ -93,12 +81,10 @@ pipeline{
         stage("Integration tests"){
             steps{
                 sh """  
-                        sleep 20
-                        curl  --connect-timeout 20 --max-time 30 http://localhost:8081
+                    sleep 20
+                    curl  --connect-timeout 20 --max-time 30 http://localhost:8081
                 """
             }
         }
-        
     }
-
 }
