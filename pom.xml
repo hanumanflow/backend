@@ -10,8 +10,8 @@
 	</parent>
 	<groupId>com.hanuman</groupId>
 	<artifactId>backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>backend</name>
+	<!-- <version>0.0.1-SNAPSHOT</version> -->
+	<!-- <name>backend</name> -->
 	<description/>
 	<url/>
 	<licenses>
@@ -52,7 +52,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>${name}</finalName>
+		<finalName>${project.name}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
