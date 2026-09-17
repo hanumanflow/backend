@@ -5,7 +5,7 @@ pipeline{
         PROJECT_NAME="backend"
         PROJECT_VERSION=1
         GIT_CREDENTIALS=credentials('github-username-password')
-        GIT_REPO="git@https://github.com/hanumanflow/backend.git"
+        GIT_REPO="https://github.com/hanumanflow/backend.git"
         BRANCH="feature/advanced"
 
     }
