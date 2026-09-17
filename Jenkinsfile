@@ -59,6 +59,7 @@ pipeline{
                 sh """
                     pwd
                     ls -l
+                    chmod +x ./mvnw
                 """
             }
         }
