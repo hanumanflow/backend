@@ -5,13 +5,22 @@ pipeline{
         PROJECT_NAME="backend"
         PROJECT_VERSION=1
     }
+    options{
+        timestamps()
+        buildDiscarder(
+            logRotator(
+                numToKeepStr: '3'
+                artifactNumToKeepStr: '3'
+            )
+        )
+    }
 
     stages{
         stage("Checkout"){
             steps{
                 checkout scm
                 sh """
-                        chmod +x mvnw
+                    chmod +x mvnw
                 """
             }
         }
