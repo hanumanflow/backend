@@ -80,11 +80,13 @@ pipeline{
         }
         stage("Deploy"){
             steps{
+                withEnv(['JENKINS_NODE_COOKIE=donotkill']){
                 sh """
                     ls -l target/
                     nohup java -jar -Dserver.port=8081 "target/${PROJECT_NAME}-${PROJECT_VERSION}.jar" &>>backend.log &
 
                 """
+                }
             }
         }
 
