@@ -92,7 +92,8 @@ pipeline{
 
         stage("Integration tests"){
             steps{
-                sh """
+                sh """  
+                        sleep 20
                         curl  --connect-timeout 20 --max-time 30 http://localhost:8081
                 """
             }
