@@ -22,20 +22,22 @@ pipeline{
         stage("Checkout"){
             steps{
                 deleteDir() //to delete previous directory
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [
-                        [
-                            name: "${env.BRANCH}"
-                        ]
-                    ],
-                    userRemoteConfigs: [
-                        [
-                            credentialsId: 'github-username-password',
-                            url: "${GIT_REPO}"
-                        ]
-                    ]
-                ])
+                // checkout([
+                //     $class: 'GitSCM',
+                //     branches: [
+                //         [
+                //             name: "${env.BRANCH}"
+                //         ]
+                //     ],
+                //     userRemoteConfigs: [
+                //         [
+                //             credentialsId: 'github-username-password',
+                //             url: "${GIT_REPO}"
+                //         ]
+                //     ]
+                // ])
+
+                checkout scm
 
                 script{
                     env.GIT_COMMIT_SHORT = sh(
