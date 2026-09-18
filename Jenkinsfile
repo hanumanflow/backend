@@ -5,9 +5,8 @@ pipeline{
         PROJECT_NAME="backend"
         PROJECT_VERSION=1
         GIT_CREDENTIALS=credentials('github-username-password')
-        GIT_REPO="git@https://github.com/hanumanflow/backend.git"
+        GIT_REPO="https://github.com/hanumanflow/backend.git"
         BRANCH="feature/advanced"
-
     }
     options{
         timestamps()
@@ -21,15 +20,9 @@ pipeline{
 
     stages{
         stage("Checkout"){
-            /*steps{
-                checkout scm
-                sh """
-                    chmod +x mvnw
-                """
-            }*/
-
             steps{
                 deleteDir() //to delete previous directory
+                echo "------------------Checking out repo -----------------"
                 checkout([
                     $class: 'GitSCM',
                     branches: [
@@ -38,13 +31,14 @@ pipeline{
                         ]
                     ],
                     userRemoteConfigs: [
-
                         [
-                            credentialsId: 'github-username-password'
+                            credentialsId: 'github-username-password',
                             url: "${GIT_REPO}"
                         ]
                     ]
                 ])
+
+                // checkout scm
 
                 script{
                     env.GIT_COMMIT_SHORT = sh(
@@ -57,8 +51,7 @@ pipeline{
                 }
 
                 sh """
-                    pwd
-                    ls -l
+                    chmod +x ./mvnw
                 """
             }
         }
@@ -68,33 +61,39 @@ pipeline{
                     ./mvnw -B -ntp clean test
                 """
             }
+
+            post{
+                always{
+                    junit(testResults: "target/surefire-reports/*.xml" , allowEmptyResults: true )
+                }
+            }
         }
 
         stage("Package"){
             steps{
                 sh """
-                        ./mvnw -ntp package -Dname="${PROJECT_NAME}-${PROJECT_VERSION}"
+                    ./mvnw -ntp package -Dproject.name="${PROJECT_NAME}-${PROJECT_VERSION}"
                 """
             }
         }
         stage("Deploy"){
             steps{
+                // withEnv(['JENKINS_NODE_COOKIE=donotkill']){
                 sh """
                     ls -l target/
                     nohup java -jar -Dserver.port=8081 "target/${PROJECT_NAME}-${PROJECT_VERSION}.jar" &>>backend.log &
-
                 """
+                // }
             }
         }
 
         stage("Integration tests"){
             steps{
-                sh """
-                        curl http://localhost:8081
+                sh """  
+                    sleep 20
+                    curl  --connect-timeout 20 --max-time 30 http://localhost:8081
                 """
             }
         }
-        
     }
-
 }
