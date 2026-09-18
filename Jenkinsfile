@@ -4,6 +4,7 @@ pipeline{
     environment{
         PROJECT_NAME="backend"
         PROJECT_VERSION=1
+        BUILD_NAME="${PROJECT_NAME}-${PROJECT_VERSION}"
         GIT_CREDENTIALS=credentials('github-username-password')
         GIT_REPO="https://github.com/hanumanflow/backend.git"
         BRANCH="feature/advanced"
@@ -72,8 +73,15 @@ pipeline{
         stage("Package"){
             steps{
                 sh """
-                    ./mvnw -ntp package -Dproject.name="${PROJECT_NAME}-${PROJECT_VERSION}"
+                    ./mvnw -ntp package -DskipTests -Dproject.name="${BUILD_NAME}"
                 """
+            }
+            post{
+                success{
+                    echo "----------- Packaging is success -----------"
+                    archiveArtifacts(artifacts: "target/${BUILD_NAME}.jar" ,
+                                     fingerprint: true)
+                }
             }
         }
         stage("Deploy"){
@@ -81,7 +89,7 @@ pipeline{
                 // withEnv(['JENKINS_NODE_COOKIE=donotkill']){
                 sh """
                     ls -l target/
-                    nohup java -jar -Dserver.port=8081 "target/${PROJECT_NAME}-${PROJECT_VERSION}.jar" &>>backend.log &
+                    nohup java -jar -Dserver.port=8081 "target/${BUILD_NAME}.jar" &>>backend.log &
                 """
                 // }
             }
