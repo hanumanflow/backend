@@ -8,6 +8,7 @@ pipeline{
         GIT_CREDENTIALS=credentials('github-username-password')
         GIT_REPO="https://github.com/hanumanflow/backend.git"
         BRANCH="feature/advanced"
+        MAVEN_DEPENDENCIES="${HOME}/.m2/repository"
     }
     options{
         timestamps()
@@ -70,10 +71,13 @@ pipeline{
             }
         }
 
+        //Dependencies scanning
+        //Sonarquebe 
+
         stage("Package"){
             steps{
                 sh """
-                    ./mvnw -ntp package -DskipTests -Dproject.name="${BUILD_NAME}"
+                    ./mvnw -ntp package  -Dmaven.repo.local=${MAVEN_DEPENDENCIES} -DskipTests -Dproject.name="${BUILD_NAME}"
                 """
             }
             post{
