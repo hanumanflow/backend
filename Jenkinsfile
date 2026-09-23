@@ -77,7 +77,7 @@ pipeline{
         stage("OWASP dependency scan"){
             steps{
                sh """
-                    ./mvnw -B -ntp org.owasp:dependency-check-maven:check -DnvdApiKeyEnvironmentVariable=${NVD_API_KEY} -DfailBuildOnCVSS=7
+                    ./mvnw -B -ntp org.owasp:dependency-check-maven:check -DnvdApiKeyEnvironmentVariable=NVD_API_KEY -DfailBuildOnCVSS=7
                  """
             }
             post{
