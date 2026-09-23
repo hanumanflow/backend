@@ -97,6 +97,8 @@ pipeline{
                                             --scan ./target/*.jar
                                             --format XML
                                             --format HTML
+                                            --debug
+                                            --log ./dependency-check-debug.log
                                             --out ./
                                             ''' ,
                     odcInstallation: 'OWASP-depCheck-12',
