@@ -4,9 +4,12 @@ pipeline{
     environment{
         PROJECT_NAME="backend"
         PROJECT_VERSION=1
+        BUILD_NAME="${PROJECT_NAME}-${PROJECT_VERSION}"
         GIT_CREDENTIALS=credentials('github-username-password')
         GIT_REPO="https://github.com/hanumanflow/backend.git"
         BRANCH="feature/advanced"
+        MAVEN_DEPENDENCIES="${HOME}/.m2/repository"
+        NVD_API_KEY=credentials('NVD_API_KEY')
     }
     options{
         timestamps()
@@ -22,6 +25,7 @@ pipeline{
         stage("Checkout"){
             steps{
                 deleteDir() //to delete previous directory
+                echo "------------------Checking out repo -----------------"
                 checkout([
                     $class: 'GitSCM',
                     branches: [
@@ -36,6 +40,8 @@ pipeline{
                         ]
                     ]
                 ])
+
+                // checkout scm
 
                 script{
                     env.GIT_COMMIT_SHORT = sh(
@@ -58,21 +64,55 @@ pipeline{
                     ./mvnw -B -ntp clean test
                 """
             }
+
+            post{
+                always{
+                    junit(testResults: "target/surefire-reports/*.xml" , allowEmptyResults: true )
+                }
+            }
         }
 
         stage("Package"){
             steps{
                 sh """
-                    ./mvnw -ntp package -Dproject.name="${PROJECT_NAME}-${PROJECT_VERSION}"
+                    ./mvnw -ntp package  -Dmaven.repo.local=${MAVEN_DEPENDENCIES} -DskipTests -Dproject.name="${BUILD_NAME}"
                 """
             }
+            post{
+                success{
+                    echo "----------- Packaging is success -----------"
+                    archiveArtifacts(artifacts: "target/${BUILD_NAME}.jar" ,
+                                     fingerprint: true)
+                }
+            }
         }
+
+        //Dependencies scanning
+
+        stage("OWASP dependency scan"){
+            steps{
+            //    sh """
+            //         ./mvnw -B -ntp org.owasp:dependency-check-maven:check -DnvdApiKeyEnvironmentVariable=NVD_API_KEY -DfailBuildOnCVSS=7
+            //      """
+                dependencyCheck (
+                    additionalArguments: '--scan ./pom.xml --scan ./target --format XML --format HTML --out ./ ' ,
+                    odcInstallation: 'OWASP-depCheck-12',
+                    nvdCredentialsId: 'NVD_API_KEY'
+                )
+                
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        
+            }
+        }
+        //Sonarquebe 
+
+        
         stage("Deploy"){
             steps{
                 // withEnv(['JENKINS_NODE_COOKIE=donotkill']){
                 sh """
                     ls -l target/
-                    nohup java -jar -Dserver.port=8081 "target/${PROJECT_NAME}-${PROJECT_VERSION}.jar" &>>backend.log &
+                    nohup java -jar -Dserver.port=8081 "target/${BUILD_NAME}.jar" &>>backend.log &
                 """
                 // }
             }
