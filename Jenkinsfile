@@ -90,6 +90,7 @@ pipeline{
                 sh """
                     pwd
                     ls -l
+                    ls -l target/
                 """
                 dependencyCheck (
                     additionalArguments: '''
@@ -97,7 +98,6 @@ pipeline{
                                             --scan ./target/*.jar
                                             --format XML
                                             --format HTML
-                                            --debug
                                         
                                             --out ./
                                             ''' ,
