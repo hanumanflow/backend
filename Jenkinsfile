@@ -58,14 +58,6 @@ pipeline{
                 """
             }
         }
-
-        stage("verify"){
-            steps{
-                sh """
-                    ./mvnw clean verify -DskipTests
-                """
-            }
-        }
         stage("Test"){
             steps{
                 sh """
@@ -76,6 +68,21 @@ pipeline{
             post{
                 always{
                     junit(testResults: "target/surefire-reports/*.xml" , allowEmptyResults: true )
+                }
+            }
+        }
+
+        stage("Package"){
+            steps{
+                sh """
+                    ./mvnw -ntp package  -Dmaven.repo.local=${MAVEN_DEPENDENCIES} -DskipTests -Dproject.name="${BUILD_NAME}"
+                """
+            }
+            post{
+                success{
+                    echo "----------- Packaging is success -----------"
+                    archiveArtifacts(artifacts: "target/${BUILD_NAME}.jar" ,
+                                     fingerprint: true)
                 }
             }
         }
@@ -113,20 +120,7 @@ pipeline{
         }
         //Sonarquebe 
 
-        stage("Package"){
-            steps{
-                sh """
-                    ./mvnw -ntp package  -Dmaven.repo.local=${MAVEN_DEPENDENCIES} -DskipTests -Dproject.name="${BUILD_NAME}"
-                """
-            }
-            post{
-                success{
-                    echo "----------- Packaging is success -----------"
-                    archiveArtifacts(artifacts: "target/${BUILD_NAME}.jar" ,
-                                     fingerprint: true)
-                }
-            }
-        }
+        
         stage("Deploy"){
             steps{
                 // withEnv(['JENKINS_NODE_COOKIE=donotkill']){
