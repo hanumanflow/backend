@@ -86,11 +86,11 @@ pipeline{
                     nvdCredentialsId: 'NVD_API_KEY'
                 )
             }
-            post{
-                always{
-                    archiveArtifacts "target/dependency-check-report.html"
-                }
-            }
+            // post{
+            //     always{
+            //         archiveArtifacts "target/dependency-check-report.html"
+            //     }
+            // }
         }
         //Sonarquebe 
 
