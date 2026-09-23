@@ -100,14 +100,7 @@ pipeline{
                     ls -l target/
                 """
                 dependencyCheck (
-                    additionalArguments: '''
-                                            --scan ./pom.xml 
-                                            --scan ./target/*.jar
-                                            --format XML
-                                            --format HTML
-                                        
-                                            --out ./
-                                            ''' ,
+                    additionalArguments: '--scan ./target --format XML --format HTML --out ./ ' ,
                     odcInstallation: 'OWASP-depCheck-12',
                     nvdCredentialsId: 'NVD_API_KEY'
                 )
