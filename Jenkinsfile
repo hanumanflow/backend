@@ -94,22 +94,16 @@ pipeline{
             //    sh """
             //         ./mvnw -B -ntp org.owasp:dependency-check-maven:check -DnvdApiKeyEnvironmentVariable=NVD_API_KEY -DfailBuildOnCVSS=7
             //      """
-                sh """
-                    pwd
-                    ls -l
-                    ls -l target/
-                """
                 dependencyCheck (
                     additionalArguments: '--scan ./target --format XML --format HTML --out ./ ' ,
                     odcInstallation: 'OWASP-depCheck-12',
                     nvdCredentialsId: 'NVD_API_KEY'
                 )
+                
+                depdendencyCheckPublisher(
+                    pattern: 'dependency-check-report.html'
+                )
             }
-            // post{
-            //     always{
-            //         archiveArtifacts "target/dependency-check-report.html"
-            //     }
-            // }
         }
         //Sonarquebe 
 
