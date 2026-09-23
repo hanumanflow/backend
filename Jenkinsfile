@@ -79,7 +79,10 @@ pipeline{
             //    sh """
             //         ./mvnw -B -ntp org.owasp:dependency-check-maven:check -DnvdApiKeyEnvironmentVariable=NVD_API_KEY -DfailBuildOnCVSS=7
             //      """
-
+                sh """
+                    pwd
+                    ls -l
+                """
                 dependencyCheck (
                     additionalArguments: '--scan ./pom.xml --out ./  --format ALL --prettyPrint' ,
                     odcInstallation: 'OWASP-depCheck-12',
