@@ -100,9 +100,8 @@ pipeline{
                     nvdCredentialsId: 'NVD_API_KEY'
                 )
                 
-                depdendencyCheckPublisher(
-                    pattern: 'dependency-check-report.html'
-                )
+                dependencyCheckPublisher pattern: 'dependency-check-report.html'
+        
             }
         }
         //Sonarquebe 
