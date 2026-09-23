@@ -95,7 +95,7 @@ pipeline{
             //         ./mvnw -B -ntp org.owasp:dependency-check-maven:check -DnvdApiKeyEnvironmentVariable=NVD_API_KEY -DfailBuildOnCVSS=7
             //      """
                 dependencyCheck (
-                    additionalArguments: '--scan ./target --format XML --format HTML --out ./ ' ,
+                    additionalArguments: '--scan ./pom.xml --scan ./target --format XML --format HTML --out ./ ' ,
                     odcInstallation: 'OWASP-depCheck-12',
                     nvdCredentialsId: 'NVD_API_KEY'
                 )
