@@ -81,7 +81,7 @@ pipeline{
             //      """
 
                 dependencyCheck (
-                    additionalArguments: '--scan ./ --out ./  --format ALL --prettyPrint' ,
+                    additionalArguments: '--scan ./pom.xml --out ./  --format ALL --prettyPrint' ,
                     odcInstallation: 'OWASP-depCheck-12',
                     nvdCredentialsId: 'NVD_API_KEY'
                 )
