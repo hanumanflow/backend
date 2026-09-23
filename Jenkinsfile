@@ -58,6 +58,14 @@ pipeline{
                 """
             }
         }
+
+        stage("verify"){
+            steps{
+                sh """
+                    ./mvnw clean verify -DskipTests
+                """
+            }
+        }
         stage("Test"){
             steps{
                 sh """
@@ -84,7 +92,13 @@ pipeline{
                     ls -l
                 """
                 dependencyCheck (
-                    additionalArguments: '--scan ./pom.xml --out ./  --format ALL --prettyPrint' ,
+                    additionalArguments: '''
+                                            --scan ./pom.xml 
+                                            --scan ./target/*.jar
+                                            --format XML
+                                            --format HTML
+                                            --out ./
+                                            ''' ,
                     odcInstallation: 'OWASP-depCheck-12',
                     nvdCredentialsId: 'NVD_API_KEY'
                 )
