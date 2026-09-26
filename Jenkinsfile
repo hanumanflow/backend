@@ -126,7 +126,7 @@ pipeline{
 
                     $SONAR_SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.projectKey=backend-project \
-                        -Dsonar.sources=. \
+                        -Dsonar.sources=src \
                         -Dsonar.host.url=http://3.7.153.179:9000 \
                         -Dsonar.token=sqp_d523d0b24640c0d04cc94f2ebfd1425ab2406d12
                 '''
