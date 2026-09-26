@@ -7,7 +7,7 @@ pipeline{
         BUILD_NAME="${PROJECT_NAME}-${PROJECT_VERSION}"
         GIT_CREDENTIALS=credentials('github-username-password')
         GIT_REPO="https://github.com/hanumanflow/backend.git"
-        BRANCH="feature/advanced"
+        BRANCH="feature/sonarqube"
         MAVEN_DEPENDENCIES="${HOME}/.m2/repository"
         NVD_API_KEY=credentials('NVD_API_KEY')
         TEMP_STOP=true
