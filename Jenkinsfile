@@ -12,6 +12,7 @@ pipeline{
         NVD_API_KEY=credentials('NVD_API_KEY')
         TEMP_STOP=true
         SONAR_SCANNER_HOME= tool 'sonarqube-scanner-8'
+        SONAR_URL='http://3.7.153.179:9000'
     }
     options{
         timestamps()
@@ -119,16 +120,28 @@ pipeline{
         }
         //Sonarquebe 
 
-        stage("Sonarqube - SAST"){
+        // stage("Sonarqube - SAST"){
+        //     steps{
+        //         sh '''
+        //             echo "SONAR-HOME - $SONAR_SCANNER_HOME"
+
+        //             $SONAR_SCANNER_HOME/bin/sonar-scanner \
+        //                 -Dsonar.projectKey=backend-project \
+        //                 -Dsonar.sources=src \
+        //                 -Dsonar.host.url=http://3.7.153.179:9000 \
+        //                 -Dsonar.token=sqp_d523d0b24640c0d04cc94f2ebfd1425ab2406d12
+        //         '''
+        //     }
+        // }
+
+        stage("Sonarqube - SAST - maven"){
             steps{
                 sh '''
-                    echo "SONAR-HOME - $SONAR_SCANNER_HOME"
-
-                    $SONAR_SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectKey=backend-project \
-                        -Dsonar.sources=src \
-                        -Dsonar.host.url=http://3.7.153.179:9000 \
-                        -Dsonar.token=sqp_d523d0b24640c0d04cc94f2ebfd1425ab2406d12
+                    mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                            -Dsonar.projectKey=backend-project \
+                            -Dsonar.projectName='backend-project' \
+                            -Dsonar.host.url=${SONAR_URL} \
+                            -Dsonar.token=sqp_d523d0b24640c0d04cc94f2ebfd1425ab2406d12
                 '''
             }
         }
