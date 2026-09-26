@@ -61,7 +61,7 @@ pipeline{
         }
         stage("Test"){
             when{
-                expression { env.TEMP_STOP }
+                expression { env.TEMP_STOP == "false" }
             }
             steps{
                 sh """
@@ -95,7 +95,7 @@ pipeline{
 
         stage("OWASP dependency scan"){
             when{
-                expression { env.TEMP_STOP }
+                expression { env.TEMP_STOP == "false" }
             }
             steps{
             //    sh """
@@ -120,8 +120,8 @@ pipeline{
 
         
         stage("Deploy"){
-            when{
-                expression { env.TEMP_STOP }
+             when{
+                expression { env.TEMP_STOP == "false" }
             }
             steps{
                 // withEnv(['JENKINS_NODE_COOKIE=donotkill']){
@@ -135,7 +135,7 @@ pipeline{
 
         stage("Integration tests"){
             when{
-                expression { env.TEMP_STOP }
+                expression { env.TEMP_STOP == "false" }
             }
             steps{
                 sh """  
