@@ -10,6 +10,7 @@ pipeline{
         BRANCH="feature/advanced"
         MAVEN_DEPENDENCIES="${HOME}/.m2/repository"
         NVD_API_KEY=credentials('NVD_API_KEY')
+        TEMP_STOP=true
     }
     options{
         timestamps()
@@ -59,6 +60,9 @@ pipeline{
             }
         }
         stage("Test"){
+            when{
+                expression { env.TEMP_STOP }
+            }
             steps{
                 sh """
                     ./mvnw -B -ntp clean test
@@ -90,6 +94,9 @@ pipeline{
         //Dependencies scanning
 
         stage("OWASP dependency scan"){
+            when{
+                expression { env.TEMP_STOP }
+            }
             steps{
             //    sh """
             //         ./mvnw -B -ntp org.owasp:dependency-check-maven:check -DnvdApiKeyEnvironmentVariable=NVD_API_KEY -DfailBuildOnCVSS=7
@@ -113,6 +120,9 @@ pipeline{
 
         
         stage("Deploy"){
+            when{
+                expression { env.TEMP_STOP }
+            }
             steps{
                 // withEnv(['JENKINS_NODE_COOKIE=donotkill']){
                 sh """
@@ -124,6 +134,9 @@ pipeline{
         }
 
         stage("Integration tests"){
+            when{
+                expression { env.TEMP_STOP }
+            }
             steps{
                 sh """  
                     sleep 20
