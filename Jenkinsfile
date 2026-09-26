@@ -100,7 +100,10 @@ pipeline{
                     nvdCredentialsId: 'NVD_API_KEY'
                 )
                 
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+                dependencyCheckPublisher (
+                    pattern: 'dependency-check-report.xml' ,
+                    failedTotalCritical: 4
+                )
         
             }
         }
