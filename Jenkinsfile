@@ -10,7 +10,7 @@ pipeline{
         BRANCH="feature/sonarqube"
         MAVEN_DEPENDENCIES="${HOME}/.m2/repository"
         NVD_API_KEY=credentials('NVD_API_KEY')
-        TEMP_STOP=true
+        TEMP_STOP=false
     }
     options{
         timestamps()
