@@ -10,7 +10,8 @@ pipeline{
         BRANCH="feature/sonarqube"
         MAVEN_DEPENDENCIES="${HOME}/.m2/repository"
         NVD_API_KEY=credentials('NVD_API_KEY')
-        TEMP_STOP=false
+        TEMP_STOP=true
+        SONAR_SCANNER_HOME= tool 'sonarqube-scanner-8'
     }
     options{
         timestamps()
@@ -117,6 +118,20 @@ pipeline{
             }
         }
         //Sonarquebe 
+
+        stage("Sonarqube - SAST"){
+            steps{
+                sh '''
+                    echo "SONAR-HOME - $SONAR_SCANNER_HOME"
+
+                    $SONAR_SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=backend-project \
+                        -Dsonar.sources=/src/main/java \
+                        -Dsonar.host.url=http://3.7.153.179:9000 \
+                        -Dsonar.token=sqp_d523d0b24640c0d04cc94f2ebfd1425ab2406d12
+                '''
+            }
+        }
 
         
         stage("Deploy"){
