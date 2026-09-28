@@ -137,7 +137,8 @@ pipeline{
         stage("Sonarqube - SAST - maven"){
             steps{
                 sh '''
-                    ./mvnw clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                    ./mvnw -B -ntp verify -Dmaven.repo.local=${MAVEN_DEPENDENCIES} -DskipTests=true 
+                            -Dorg.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                             -Dsonar.projectKey=backend-project \
                             -Dsonar.projectName='backend-project' \
                             -Dsonar.host.url=${SONAR_URL} \
