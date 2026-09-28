@@ -138,8 +138,8 @@ pipeline{
             steps{
                 withSonarQubeEnv('sonarqube-server'){
                     sh '''
-                        ./mvnw -B -ntp verify -Dmaven.repo.local=${MAVEN_DEPENDENCIES}  \
-                                -Dorg.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                        ./mvnw -B -ntp clean verify   \
+                                org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                                 -Dsonar.projectKey=backend-project \
                                 -Dsonar.projectName='backend-project' 
                     '''
@@ -150,9 +150,8 @@ pipeline{
         stage("SonarQube - Quality gate"){
             steps{
                 timeout(time: 1 , unit: 'HOURS'){
-                    withSonarQubeEnv('sonarqube-server'){
                         waitForQualityGate abortPipeline: true
-                    }
+                    
                 }
             }
         }
