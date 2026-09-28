@@ -139,7 +139,7 @@ pipeline{
                 withSonarQubeEnv('sonarqube-server'){
                     sh '''
                         ./mvnw -B -ntp verify -Dmaven.repo.local=${MAVEN_DEPENDENCIES}  \
-                                -Dorg.sonarsource.scanner.maven:sonar-maven-plugi   n:sonar \
+                                -Dorg.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                                 -Dsonar.projectKey=backend-project \
                                 -Dsonar.projectName='backend-project' 
                     '''
